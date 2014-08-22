@@ -37,10 +37,8 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.Shader.TileMode;
-import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.PorterDuff.Mode;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.RemoteException;
@@ -88,6 +86,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
     private View mRecentsScrim;
     private View mRecentsNoApps;
     private RecentsScrollView mRecentsContainer;
+    private ImageView mRNoAppsIcon;
 
     private boolean mShowing;
     private boolean mWaitingToShow;
@@ -101,7 +100,6 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
     private ArrayList<TaskDescription> mRecentTaskDescriptions;
     private TaskDescriptionAdapter mListAdapter;
     private int mThumbnailWidth;
-    private int mThumbnailHeight;
     private boolean mFitThumbnailToXY;
     private int mRecentItemLayoutId;
     private boolean mHighEndGfx;
@@ -109,9 +107,6 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
 
     private int mDragPositionX;
     private int mDragPositionY;
-
-    private ImageView mREraser;
-    private AnimationDrawable frameEraser;
 
     public static interface RecentsScrollView {
         public int numItemsInOneScreenful();
@@ -368,9 +363,8 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
             mRecentsNoApps.setAlpha(1f);
             mRecentsNoApps.setVisibility(noApps ? View.VISIBLE : View.INVISIBLE);
 
-	    mREraser.setVisibility(noApps ? View.VISIBLE : View.INVISIBLE);
-	    mClearRecents.setColorFilter(getResources().getColor(R.color.status_bar_recents_app_label_color), Mode.SRC_ATOP);
-            mClearRecents.setVisibility(noApps ? View.GONE : View.VISIBLE);
+	    mRNoAppsIcon.setVisibility(noApps ? View.VISIBLE : View.INVISIBLE);
+	    mClearRecents.setVisibility(noApps ? View.GONE : View.VISIBLE);
             onAnimationEnd(null);
             setFocusable(true);
             setFocusableInTouchMode(true);
@@ -393,12 +387,12 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
             int currX = (int) m.getX(1);
             int currY = (int) m.getY(1);
 
-            switch (action) {
+	   switch (action) {
                 case MotionEvent.ACTION_DOWN:
                 case MotionEvent.ACTION_POINTER_DOWN:
                     mDragPositionX = currX;
                     mDragPositionY = currY;
-                    break;
+		    break;
 
                 case MotionEvent.ACTION_UP:
                     handleThumbnailDragRelease(thumb);
@@ -512,7 +506,6 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
     public void updateValuesFromResources() {
         final Resources res = mContext.getResources();
         mThumbnailWidth = Math.round(res.getDimension(R.dimen.status_bar_recents_thumbnail_width));
-	mThumbnailHeight = Math.round(res.getDimension(R.dimen.status_bar_recents_thumbnail_height));
         mFitThumbnailToXY = res.getBoolean(R.bool.config_recents_thumbnail_image_fits_to_xy);
     }
 
@@ -532,18 +525,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
 
         mRecentsScrim = findViewById(R.id.recents_bg_protect);
         mRecentsNoApps = findViewById(R.id.recents_no_apps);
-
-	mREraser = (ImageView) findViewById(R.id.recents_eraser);
-        mREraser.setBackgroundResource(R.drawable.recents_eraser_animation);
-        frameEraser = (AnimationDrawable) mREraser.getBackground();
-        if (mREraser != null) {
-            mREraser.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    frameEraser.start();
-                }
-            });
-        }
+	mRNoAppsIcon = (ImageView) findViewById(R.id.recents_no_apps_icon);
 
         mClearRecents = (ImageView) findViewById(R.id.recents_clear);
         if (mClearRecents != null){
@@ -596,14 +578,14 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                (h.thumbnailViewDrawable.getIntrinsicWidth() != thumbnail.getIntrinsicWidth()) ||
                (h.thumbnailViewDrawable.getIntrinsicHeight() != thumbnail.getIntrinsicHeight())) {
                 if (mFitThumbnailToXY) {
-                    h.thumbnailViewImage.setScaleType(ImageView.ScaleType.MATRIX);
+                    // h.thumbnailViewImage.setScaleType(ImageView.ScaleType.MATRIX);
+		    h.thumbnailViewImage.setScaleType(ImageView.ScaleType.FIT_CENTER);
                 } else {
                     Matrix scaleMatrix = new Matrix();
-                    float scaleW = mThumbnailWidth / (float) thumbnail.getIntrinsicWidth();
-		    float scaleH = mThumbnailHeight / (float) thumbnail.getIntrinsicHeight();
-                    scaleMatrix.setScale(scaleW, scaleH);
-                    h.thumbnailViewImage.setScaleType(ImageView.ScaleType.MATRIX);
-                    h.thumbnailViewImage.setImageMatrix(scaleMatrix);
+                    float scale = mThumbnailWidth / (float) thumbnail.getIntrinsicWidth();
+                    scaleMatrix.setScale(scale, scale);
+                    /* h.thumbnailViewImage.setScaleType(ImageView.ScaleType.MATRIX);
+                    h.thumbnailViewImage.setImageMatrix(scaleMatrix); */
                 }
             }
             if((show) && (h.thumbnailView.getVisibility() != (View.VISIBLE))) {
@@ -614,6 +596,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
             }
             h.thumbnailViewDrawable = thumbnail;
         }
+	invalidate();
     }
 
     void onTaskThumbnailLoaded(TaskDescription td) {
@@ -824,7 +807,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
         mRecentTasksLoader.remove(ad);
 
         // Handled by widget containers to enable LayoutTransitions properly
-        mListAdapter.notifyDataSetChanged();
+        //mListAdapter.notifyDataSetChanged();
 
         if (mRecentTaskDescriptions.size() == 0) {
             dismissAndGoBack();
