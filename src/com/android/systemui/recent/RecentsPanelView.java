@@ -104,6 +104,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
     private int mRecentItemLayoutId;
     private boolean mHighEndGfx;
     private ImageView mClearRecents;
+    private ImageView mHazyCenterButton;
 
     private int mDragPositionX;
     private int mDragPositionY;
@@ -546,6 +547,20 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                 ((BitmapDrawable) mRecentsScrim.getBackground()).setTileModeY(TileMode.REPEAT);
             }
         }
+
+	
+	mHazyCenterButton = (ImageView)findViewById(R.id.recents_hazycenter);
+        mHazyCenterButton.setOnClickListener(new View.OnClickListener() {
+            Intent mHazyCenterIntent;
+            
+            public void onClick(View v) {
+                mHazyCenterIntent = new Intent();
+                mHazyCenterIntent.setFlags(0x10000000);
+                mHazyCenterIntent.setAction("com.hazy.hazyapp.SwipeMainFragment");
+                mContext.startActivity(mHazyCenterIntent);
+                dismissAndGoBack();
+            }
+        });
     }
 
     public void setMinSwipeAlpha(float minAlpha) {
