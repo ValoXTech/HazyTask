@@ -30,7 +30,7 @@
 
    <FrameLayout
         android:id="@+id/recents_bg_protect"
-        android:background="@color/recent_panel_semitrasparent_background"
+        android:background="@drawable/status_bar_recents_background"
         android:layout_width="match_parent" 
 	android:layout_height="match_parent"
 	android:layout_alignParentBottom="true"
@@ -64,20 +64,29 @@
         <LinearLayout
             android:layout_gravity="bottom"
             android:orientation="horizontal"
-            android:background="@drawable/notification_header_bg"
+            android:background="@drawable/status_bar_recents_background"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1">
 
             <ImageView
                 android:id="@+id/recents_clear"
-                android:background="@drawable/notification_header_bg"
+                android:background="@drawable/status_bar_recents_background"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:src="@drawable/ic_recents_clear_all"
                 android:layout_weight="1"
-                style="?android:attr/buttonStyle"
+                style="?android:attr/buttonStyle" >
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:textAppearance="@style/RecentsNoApps"
+                    android:text="@string/recents_panel_clear_all"
+                    android:gravity="center_horizontal"
+                    android:layout_gravity="center"
                 />
+            </ImageView>
+
             <LinearLayout
                 android:layout_gravity="center_vertical"
                 android:background="@drawable/divider_vertical_holo_dark"
@@ -86,13 +95,22 @@
                 />
             <ImageView
                 android:id="@+id/recents_hazycenter"
-                android:background="@drawable/notification_header_bg"
+                android:background="@drawable/status_bar_recents_background"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:src="@drawable/ic_recents_hazycenter"
                 android:layout_weight="1"
-                style="?android:attr/buttonStyle"
+                style="?android:attr/buttonStyle" >
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:textAppearance="@style/RecentsNoApps"
+                    android:text="@string/recents_panel_hazycenter"
+                    android:gravity="center_horizontal"
+                    android:layout_gravity="center"
                 />
+            </ImageView>
+
 		</LinearLayout>
 
         <ImageView

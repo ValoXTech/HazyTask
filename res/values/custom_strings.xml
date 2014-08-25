@@ -65,4 +65,8 @@
     <!-- Content description of the data connection type DC-HSPA+ for accessibility (not shown on the screen). [CHAR LIMIT=NONE] -->
     <string name="accessibility_data_connection_DC" translatable="false">DC-HSPA+</string>
 
+    <!-- HazyTask  -->
+    <string name="recents_panel_clear_all">Clear All</string>
+    <string name="recents_panel_hazycenter">HazyCenter</string>
+
 </resources>

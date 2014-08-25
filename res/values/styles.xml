@@ -42,7 +42,7 @@
     <style name="RecentsNoApps">
         <item name="android:textSize">20dp</item>
 	<item name="android:fontFamily">sans-serif-light</item>
-        <item name="android:textColor">@*android:color/black</item>
+        <item name="android:textColor">@*android:color/white</item>
     </style>
 
     <style name="TextAppearance.StatusBar.HeadsUp"
