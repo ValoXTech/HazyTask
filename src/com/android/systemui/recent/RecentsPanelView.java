@@ -551,13 +551,13 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
 	
 	mHazyCenterButton = (ImageView)findViewById(R.id.recents_hazycenter);
         mHazyCenterButton.setOnClickListener(new View.OnClickListener() {
+            Intent mHazyCenterIntent;
             @Override
             public void onClick(View v) {
-                Intent mHazyCenterIntent;
-                PackageManager m = getPackageManager();
+                mHazyCenterIntent = new Intent();
                 mHazyCenterIntent = m.getLaunchIntentForPackage("com.hazy.hazyapp");
-				mHazyCenterIntent.addCategory(intent.CATEGORY_LAUNCHER);
-                startActivity(mHazyCenterIntent);
+				mHazyCenterIntent.setCategory(android.intent.category.LAUNCHER);
+                mContext.startActivity(mHazyCenterIntent);
                 dismissAndGoBack();
             }
         });
