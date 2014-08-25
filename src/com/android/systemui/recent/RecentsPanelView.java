@@ -555,8 +555,8 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
             @Override
             public void onClick(View v) {
                 mHazyCenterIntent = new Intent();
-                mHazyCenterIntent = m.getLaunchIntentForPackage("com.hazy.hazyapp");
-				mHazyCenterIntent.setCategory(android.intent.category.LAUNCHER);
+                mHazyCenterIntent.setAction("com.hazy.hazyapp");
+                mHazyCenterIntent.addCategory("android.intent.category.LAUNCHER");
                 mContext.startActivity(mHazyCenterIntent);
                 dismissAndGoBack();
             }
