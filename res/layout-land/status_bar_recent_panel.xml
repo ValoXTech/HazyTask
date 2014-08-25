@@ -76,17 +76,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:src="@drawable/ic_recents_clear_all"
+                android:textAppearance="@style/RecentsNoApps"
+                android:text="@string/recents_panel_clear_all"
                 android:layout_weight="1"
-                style="?android:attr/buttonStyle" >
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:textAppearance="@style/RecentsNoApps"
-                    android:text="@string/recents_panel_clear_all"
-                    android:gravity="center_horizontal"
-                    android:layout_gravity="center"
-                />
-            </ImageView>
+                style="?android:attr/buttonStyle"
+				/>
 
             <LinearLayout
                 android:layout_gravity="center_vertical"
@@ -100,19 +94,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:src="@drawable/ic_recents_hazycenter"
+                android:textAppearance="@style/RecentsNoApps"
+                android:text="@string/recents_panel_hazycenter"
                 android:layout_weight="1"
-                style="?android:attr/buttonStyle" >
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:textAppearance="@style/RecentsNoApps"
-                    android:text="@string/recents_panel_hazycenter"
-                    android:gravity="center_horizontal"
-                    android:layout_gravity="center"
+                style="?android:attr/buttonStyle"
                 />
-            </ImageView>
 
-        </LinearLayout>
+		</LinearLayout>
 
         <ImageView
             android:id="@+id/recents_no_app_icon"
