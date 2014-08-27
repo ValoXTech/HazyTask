@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2013 The Android Open Source Project
+ * Copyright (C) 2014 The Hazy Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -111,23 +112,16 @@ public class Recents extends SystemUI implements RecentsComponent {
                 int x, y;
 
                 if (config.orientation == Configuration.ORIENTATION_PORTRAIT) {
-                    float appLabelLeftMargin = res.getDimensionPixelSize(
-                            R.dimen.status_bar_recents_app_label_left_margin);
-                    float appLabelWidth = res.getDimensionPixelSize(
-                            R.dimen.status_bar_recents_app_label_width);
                     float thumbLeftMargin = res.getDimensionPixelSize(
                             R.dimen.status_bar_recents_thumbnail_left_margin);
                     float thumbBgPadding = res.getDimensionPixelSize(
                             R.dimen.status_bar_recents_thumbnail_bg_padding);
 
-                    float width = appLabelLeftMargin +
-                            +appLabelWidth
-                            + thumbLeftMargin
-                            + thumbWidth
+                    float width = thumbLeftMargin +
+                            thumbWidth
                             + 2 * thumbBgPadding;
 
-                    x = (int) ((dm.widthPixels - width) / 2f + appLabelLeftMargin + appLabelWidth
-                            + thumbBgPadding + thumbLeftMargin);
+                    x = (int) ((dm.widthPixels - width) / 2f + thumbBgPadding + thumbLeftMargin);
                     y = (int) (dm.heightPixels
                             - res.getDimensionPixelSize(R.dimen.status_bar_recents_thumbnail_height)
                             - thumbBgPadding);
@@ -141,20 +135,6 @@ public class Recents extends SystemUI implements RecentsComponent {
                             R.dimen.status_bar_recents_thumbnail_top_margin);
                     float thumbBgPadding = res.getDimensionPixelSize(
                             R.dimen.status_bar_recents_thumbnail_bg_padding);
-                    float textPadding = res.getDimensionPixelSize(
-                            R.dimen.status_bar_recents_text_description_padding);
-                    float labelTextSize = res.getDimensionPixelSize(
-                            R.dimen.status_bar_recents_app_label_text_size);
-                    Paint p = new Paint();
-                    p.setTextSize(labelTextSize);
-                    float labelTextHeight = p.getFontMetricsInt().bottom
-                            - p.getFontMetricsInt().top;
-                    float descriptionTextSize = res.getDimensionPixelSize(
-                            R.dimen.status_bar_recents_app_description_text_size);
-                    p.setTextSize(descriptionTextSize);
-                    float descriptionTextHeight = p.getFontMetricsInt().bottom
-                            - p.getFontMetricsInt().top;
-
                     float statusBarHeight = res.getDimensionPixelSize(
                             com.android.internal.R.dimen.status_bar_height);
                     float recentsItemTopPadding = statusBarHeight;
@@ -164,8 +144,7 @@ public class Recents extends SystemUI implements RecentsComponent {
 
                     float height = thumbTopMargin
                             + thumbHeight
-                            + 2 * thumbBgPadding + textPadding + labelTextHeight
-                            + recentsItemTopPadding + textPadding + descriptionTextHeight;
+                            + 2 * thumbBgPadding + recentsItemTopPadding;
                     float recentsItemRightPadding = res
                             .getDimensionPixelSize(R.dimen.status_bar_recents_item_padding);
                     float recentsScrollViewRightPadding = res

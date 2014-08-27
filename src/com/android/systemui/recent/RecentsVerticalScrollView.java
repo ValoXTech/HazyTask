@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2011 The Android Open Source Project
+ * Copyright (C) 2014 The Hazy Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.android.systemui.recent;
+
 import android.animation.LayoutTransition;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -31,12 +34,16 @@ import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.GridLayout;
 import android.widget.ScrollView;
+
 import com.android.systemui.R;
 import com.android.systemui.SwipeHelper;
 import com.android.systemui.recent.RecentsPanelView.TaskDescriptionAdapter;
+
 import java.util.HashSet;
 import java.util.Iterator;
-public class RecentsVerticalScrollView extends ScrollView implements SwipeHelper.Callback, RecentsPanelView.RecentsScrollView {
+
+public class RecentsVerticalScrollView extends ScrollView
+        implements SwipeHelper.Callback, RecentsPanelView.RecentsScrollView {
     private static final String TAG = RecentsPanelView.TAG;
     private static final boolean DEBUG = RecentsPanelView.DEBUG;
     private GridLayout mGridLayout;
@@ -48,25 +55,31 @@ public class RecentsVerticalScrollView extends ScrollView implements SwipeHelper
     private HashSet<View> mRecycledViews;
     private int mNumItemsInOneScreenful;
     private Runnable mOnScrollListener;
+
     public RecentsVerticalScrollView(Context context, AttributeSet attrs) {
         super(context, attrs, 0);
         float densityScale = getResources().getDisplayMetrics().density;
-        float pagingTouchSlop = (float)ViewConfiguration.get(mContext).getScaledPagingTouchSlop();
+        float pagingTouchSlop = ViewConfiguration.get(mContext).getScaledPagingTouchSlop();
         mSwipeHelper = new SwipeHelper(SwipeHelper.X, this, densityScale, pagingTouchSlop);
+
         mFadedEdgeDrawHelper = FadedEdgeDrawHelper.create(context, attrs, this, true);
         mRecycledViews = new HashSet<View>();
     }
+
     public void setMinSwipeAlpha(float minAlpha) {
         mSwipeHelper.setMinAlpha(minAlpha);
     }
+
     private int scrollPositionOfMostRecent() {
         return mGridLayout.getHeight() - getHeight() + mPaddingTop;
     }
+
     private void addToRecycledViews(View v) {
         if (mRecycledViews.size() < mNumItemsInOneScreenful) {
             mRecycledViews.add(v);
         }
     }
+
     public View findViewForTask(int persistentTaskId) {
         for (int i = 0; i < mGridLayout.getChildCount(); i++) {
             View v = mGridLayout.getChildAt(i);
@@ -77,8 +90,8 @@ public class RecentsVerticalScrollView extends ScrollView implements SwipeHelper
         }
         return null;
     }
+
     private void update() {
-	mGridLayout.removeAllViews();
         for (int i = 0; i < mGridLayout.getChildCount(); i++) {
             View v = mGridLayout.getChildAt(i);
             addToRecycledViews(v);
@@ -86,7 +99,9 @@ public class RecentsVerticalScrollView extends ScrollView implements SwipeHelper
         }
         LayoutTransition transitioner = getLayoutTransition();
         setLayoutTransition(null);
+
         mGridLayout.removeAllViews();
+
         // Once we can clear the data associated with individual item views,
         // we can get rid of the removeAllViews() and the code below will
         // recycle them.
@@ -99,15 +114,18 @@ public class RecentsVerticalScrollView extends ScrollView implements SwipeHelper
                 old.setVisibility(VISIBLE);
             }
             final View view = mAdapter.getView(i, old, mGridLayout);
+
             if (mFadedEdgeDrawHelper != null) {
                 mFadedEdgeDrawHelper.addViewCallback(view);
             }
+
             OnTouchListener noOpListener = new OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     return true;
                 }
             };
+
             view.setOnClickListener(new OnClickListener() {
                 public void onClick(View v) {
                     mCallback.dismiss();
@@ -115,36 +133,23 @@ public class RecentsVerticalScrollView extends ScrollView implements SwipeHelper
             });
             // We don't want a click sound when we dimiss recents
             view.setSoundEffectsEnabled(false);
+
             OnClickListener launchAppListener = new OnClickListener() {
                 public void onClick(View v) {
                     mCallback.handleOnClick(view);
                 }
             };
+
             RecentsPanelView.ViewHolder holder = (RecentsPanelView.ViewHolder) view.getTag();
             final View thumbnailView = holder.thumbnailView;
-            OnLongClickListener longClickListener = new OnLongClickListener() {
-                public boolean onLongClick(View v) {
-                    final View anchorView = view.findViewById(R.id.app_description);
-                    mCallback.handleLongPress(view, anchorView, thumbnailView);
-                    return true;
-                }
-            };
             thumbnailView.setClickable(true);
             thumbnailView.setOnClickListener(launchAppListener);
             thumbnailView.setOnLongClickListener(longClickListener);
-            // We don't want to dismiss recents if a user clicks on the app title
-            // (we also don't want to launch the app either, though, because the
-            // app title is a small target and doesn't have great click feedback)
-            final View appTitle = view.findViewById(R.id.app_label);
-            appTitle.setContentDescription(" ");
-            appTitle.setOnTouchListener(noOpListener);
-            final View calloutLine = view.findViewById(R.id.recents_callout_line);
-            if (calloutLine != null) {
-                calloutLine.setOnTouchListener(noOpListener);
-            }
+
             mGridLayout.addView(view);
         }
         setLayoutTransition(transitioner);
+
         // Scroll to end after initial layout.
         final OnGlobalLayoutListener updateScroll = new OnGlobalLayoutListener() {
                 public void onGlobalLayout() {
@@ -158,6 +163,7 @@ public class RecentsVerticalScrollView extends ScrollView implements SwipeHelper
             };
         getViewTreeObserver().addOnGlobalLayoutListener(updateScroll);
     }
+
     @Override
     public void removeViewInLayout(final View view) {
         dismissChild(view);
@@ -186,17 +192,21 @@ public class RecentsVerticalScrollView extends ScrollView implements SwipeHelper
         return mSwipeHelper.onInterceptTouchEvent(ev) ||
             super.onInterceptTouchEvent(ev);
     }
+
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         return mSwipeHelper.onTouchEvent(ev) ||
             super.onTouchEvent(ev);
     }
+
     public boolean canChildBeDismissed(View v) {
         return true;
     }
+
     public void dismissChild(View v) {
         mSwipeHelper.dismissChild(v, 0);
     }
+
     public void onChildDismissed(View v) {
         addToRecycledViews(v);
         mGridLayout.removeView(v);
@@ -207,13 +217,16 @@ public class RecentsVerticalScrollView extends ScrollView implements SwipeHelper
         contentView.setAlpha(1f);
         contentView.setTranslationX(0);
     }
+
     public void onBeginDrag(View v) {
         // We do this so the underlying ScrollView knows that it won't get
         // the chance to intercept events anymore
         requestDisallowInterceptTouchEvent(true);
     }
+
     public void onDragCancelled(View v) {
     }
+
     public View getChildAtPosition(MotionEvent ev) {
         final float x = ev.getX() + getScrollX();
         final float y = ev.getY() + getScrollY();
@@ -227,12 +240,9 @@ public class RecentsVerticalScrollView extends ScrollView implements SwipeHelper
         }
         return null;
     }
+
     public View getChildContentView(View v) {
         return v.findViewById(R.id.recent_item);
-    }
-
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        super.onLayout(changed, left, top, right, bottom);
     }
 
     @Override
@@ -245,6 +255,7 @@ public class RecentsVerticalScrollView extends ScrollView implements SwipeHelper
                     0, 0, mPaddingTop);
         }
     }
+
     @Override
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
        super.onScrollChanged(l, t, oldl, oldt);
@@ -252,9 +263,11 @@ public class RecentsVerticalScrollView extends ScrollView implements SwipeHelper
            mOnScrollListener.run();
        }
     }
+
     public void setOnScrollListener(Runnable listener) {
         mOnScrollListener = listener;
     }
+
     @Override
     public int getVerticalFadingEdgeLength() {
         if (mFadedEdgeDrawHelper != null) {
@@ -263,6 +276,7 @@ public class RecentsVerticalScrollView extends ScrollView implements SwipeHelper
             return super.getVerticalFadingEdgeLength();
         }
     }
+
     @Override
     public int getHorizontalFadingEdgeLength() {
         if (mFadedEdgeDrawHelper != null) {
@@ -271,6 +285,7 @@ public class RecentsVerticalScrollView extends ScrollView implements SwipeHelper
             return super.getHorizontalFadingEdgeLength();
         }
     }
+
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
@@ -280,12 +295,14 @@ public class RecentsVerticalScrollView extends ScrollView implements SwipeHelper
             .getDimensionPixelOffset(R.dimen.status_bar_recents_thumbnail_left_margin);
         setOverScrollEffectPadding(leftPadding, 0);
     }
+
     @Override
     public void onAttachedToWindow() {
         if (mFadedEdgeDrawHelper != null) {
             mFadedEdgeDrawHelper.onAttachedToWindowCallback(mGridLayout, isHardwareAccelerated());
         }
     }
+
     @Override
     protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -294,12 +311,15 @@ public class RecentsVerticalScrollView extends ScrollView implements SwipeHelper
         float pagingTouchSlop = ViewConfiguration.get(mContext).getScaledPagingTouchSlop();
         mSwipeHelper.setPagingTouchSlop(pagingTouchSlop);
     }
+
     private void setOverScrollEffectPadding(int leftPadding, int i) {
         // TODO Add to (Vertical)ScrollView
     }
+
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
+
         // Skip this work if a transition is running; it sets the scroll values independently
         // and should not have those animated values clobbered by this logic
         LayoutTransition transition = mGridLayout.getLayoutTransition();
@@ -309,6 +329,7 @@ public class RecentsVerticalScrollView extends ScrollView implements SwipeHelper
         // Keep track of the last visible item in the list so we can restore it
         // to the bottom when the orientation changes.
         mLastScrollPosition = scrollPositionOfMostRecent();
+
         // This has to happen post-layout, so run it "in the future"
         post(new Runnable() {
             public void run() {
@@ -321,16 +342,19 @@ public class RecentsVerticalScrollView extends ScrollView implements SwipeHelper
             }
         });
     }
+
     public void setAdapter(TaskDescriptionAdapter adapter) {
         mAdapter = adapter;
         mAdapter.registerDataSetObserver(new DataSetObserver() {
             public void onChanged() {
                 update();
             }
+
             public void onInvalidated() {
                 update();
             }
         });
+
         DisplayMetrics dm = getResources().getDisplayMetrics();
         int childWidthMeasureSpec =
                 MeasureSpec.makeMeasureSpec(dm.widthPixels, MeasureSpec.AT_MOST);
@@ -341,17 +365,22 @@ public class RecentsVerticalScrollView extends ScrollView implements SwipeHelper
         mNumItemsInOneScreenful =
                 (int) FloatMath.ceil(dm.heightPixels / (float) child.getMeasuredHeight());
         addToRecycledViews(child);
+
         for (int i = 0; i < mNumItemsInOneScreenful - 1; i++) {
             addToRecycledViews(mAdapter.createView(mGridLayout));
         }
     }
+
     public int numItemsInOneScreenful() {
         return mNumItemsInOneScreenful;
     }
+
     @Override
     public void setLayoutTransition(LayoutTransition transition) {
+        // The layout transition applies to our embedded GridLayout
         mGridLayout.setLayoutTransition(transition);
     }
+
     public void setCallback(RecentsCallback callback) {
         mCallback = callback;
     }

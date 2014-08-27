@@ -3,6 +3,7 @@
 /* apps/common/assets/default/default/skins/StatusBar.xml
 **
 ** Copyright 2010, The Android Open Source Project
+** Copyright 2014, The Hazy Open Source Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -32,28 +33,28 @@
         android:id="@+id/recents_bg_protect"
         android:background="@drawable/status_bar_recents_background"
         android:layout_width="match_parent" 
-	android:layout_height="match_parent"
-	android:layout_alignParentBottom="true"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
         android:fitsSystemWindows="true">
 
         <com.android.systemui.recent.RecentsVerticalScrollView
             android:id="@+id/recents_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-	    android:layout_marginEnd="0dp"
+            android:layout_marginEnd="0dp"
             android:divider="@null"
             android:fadingEdge="vertical"
             android:scrollbars="none"
             android:fadingEdgeLength="@dimen/status_bar_recents_scroll_fading_edge_length"
-	    android:layout_gravity="top|center"
+            android:layout_gravity="top|center"
             android:clipToPadding="false"
             android:clipChildren="false">
 
             <GridLayout android:id="@+id/recents_grid_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-		android:columnCount="2"
-		android:layout_gravity="top|center"
+                android:columnCount="2"
+                android:layout_gravity="top|center"
                 android:fitsSystemWindows="true"
                 android:clipToPadding="false"
                 android:clipChildren="false">
@@ -62,45 +63,36 @@
         </com.android.systemui.recent.RecentsVerticalScrollView>
 
         <LinearLayout
-            android:layout_gravity="bottom"
-            android:orientation="horizontal"
-            android:background="@drawable/status_bar_recents_background"
+        android:layout_gravity="bottom"
+        android:orientation="horizontal"
+        android:background="@drawable/status_bar_recents_background"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+
+        <ImageView
+            android:id="@+id/recents_clear"
+            android:background="@*android:color/transparent"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
+            android:layout_height="50dp"
+            android:src="@drawable/ic_recents_clear_all"
+            android:title="@string/recents_panel_clear_all"
+            android:layout_weight="1"
+            style="?android:attr/buttonStyle"
+            />
 
-            <ImageView
-                android:id="@+id/recents_clear"
-                android:background="@drawable/status_bar_recents_background"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:src="@drawable/ic_recents_clear_all"
-                android:textAppearance="@style/RecentsNoApps"
-                android:text="@string/recents_panel_clear_all"
-                android:layout_weight="1"
-                style="?android:attr/buttonStyle"
-				/>
+        <ImageView
+            android:id="@+id/recents_hazycenter"
+            android:background="@*android:color/transparent"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_recents_hazycenter"
+            android:title="@string/recents_panel_hazycenter"
+            android:layout_weight="1"
+            style="?android:attr/buttonStyle"
+            />
 
-            <LinearLayout
-                android:layout_gravity="center_vertical"
-                android:background="@drawable/divider_vertical_holo_dark"
-                android:layout_width="1dp"
-                android:layout_height="48dp"
-                />
-            <ImageView
-                android:id="@+id/recents_hazycenter"
-                android:background="@drawable/status_bar_recents_background"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:src="@drawable/ic_recents_hazycenter"
-                android:textAppearance="@style/RecentsNoApps"
-                android:text="@string/recents_panel_hazycenter"
-                android:layout_weight="1"
-                style="?android:attr/buttonStyle"
-                />
-
-		</LinearLayout>
-
+        </LinearLayout>
         <ImageView
             android:id="@+id/recents_no_apps_icon"
             android:clickable="true"
@@ -109,11 +101,11 @@
             android:gravity="center_horizontal"
             android:layout_gravity="center"
             android:src="@drawable/ic_recents_no_app"
-	        android:visibility="invisible" />
+            android:visibility="invisible" />
 
     </FrameLayout>
 
-    <include layout="@layout/status_bar_no_recent_apps"
+        <include layout="@layout/status_bar_no_recent_apps"
         android:id="@+id/recents_no_apps"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
