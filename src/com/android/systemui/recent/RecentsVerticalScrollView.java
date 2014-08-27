@@ -142,9 +142,26 @@ public class RecentsVerticalScrollView extends ScrollView
 
             RecentsPanelView.ViewHolder holder = (RecentsPanelView.ViewHolder) view.getTag();
             final View thumbnailView = holder.thumbnailView;
+            OnLongClickListener longClickListener = new OnLongClickListener() {
+                public boolean onLongClick(View v) {
+                    final View anchorView = view.findViewById(R.id.app_description);
+                    mCallback.handleLongPress(view, anchorView, thumbnailView);
+                    return true;
+                }
+            };
             thumbnailView.setClickable(true);
             thumbnailView.setOnClickListener(launchAppListener);
             thumbnailView.setOnLongClickListener(longClickListener);
+            // We don't want to dismiss recents if a user clicks on the app title
+            // (we also don't want to launch the app either, though, because the
+            // app title is a small target and doesn't have great click feedback)
+            final View appTitle = view.findViewById(R.id.app_label);
+            appTitle.setContentDescription(" ");
+            appTitle.setOnTouchListener(noOpListener);
+            final View calloutLine = view.findViewById(R.id.recents_callout_line);
+            if (calloutLine != null) {
+                calloutLine.setOnTouchListener(noOpListener);
+            }
 
             mGridLayout.addView(view);
         }

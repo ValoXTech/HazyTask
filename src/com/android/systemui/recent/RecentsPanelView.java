@@ -136,6 +136,9 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
         ImageView thumbnailViewImage;
         Drawable thumbnailViewDrawable;
         ImageView iconView;
+        TextView labelView;
+        TextView descriptionView;
+        View calloutLine;
         TaskDescription taskDescription;
         boolean loadedThumbnailAndIcon;
     }
@@ -170,6 +173,9 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
             updateThumbnail(holder, mRecentTasksLoader.getDefaultThumbnail(), false, false);
             holder.iconView = (ImageView) convertView.findViewById(R.id.app_icon);
             holder.iconView.setImageDrawable(mRecentTasksLoader.getDefaultIcon());
+            holder.labelView = (TextView) convertView.findViewById(R.id.app_label);
+            holder.calloutLine = convertView.findViewById(R.id.recents_callout_line);
+            holder.descriptionView = (TextView) convertView.findViewById(R.id.app_description);
 
             convertView.setTag(holder);
             return convertView;
@@ -186,6 +192,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
 
             final TaskDescription td = mRecentTaskDescriptions.get(index);
 
+            holder.labelView.setVisibility(View.GONE);
             holder.thumbnailView.setContentDescription(td.getLabel());
             holder.loadedThumbnailAndIcon = td.isLoaded();
             if (td.isLoaded()) {
@@ -199,6 +206,14 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                         oldHolder.iconView.setAlpha(1f);
                         oldHolder.iconView.setTranslationX(0f);
                         oldHolder.iconView.setTranslationY(0f);
+                        oldHolder.labelView.setAlpha(1f);
+                        oldHolder.labelView.setTranslationX(0f);
+                        oldHolder.labelView.setTranslationY(0f);
+                        if (oldHolder.calloutLine != null) {
+                            oldHolder.calloutLine.setAlpha(1f);
+                            oldHolder.calloutLine.setTranslationX(0f);
+                            oldHolder.calloutLine.setTranslationY(0f);
+                        }
                     }
                     mItemToAnimateInWhenWindowAnimationIsFinished = holder;
                     int translation = -getResources().getDimensionPixelSize(
@@ -210,6 +225,10 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                         }
                         holder.iconView.setAlpha(0f);
                         holder.iconView.setTranslationX(translation);
+                        holder.labelView.setAlpha(0f);
+                        holder.labelView.setTranslationX(translation);
+                        holder.calloutLine.setAlpha(0f);
+                        holder.calloutLine.setTranslationX(translation);
                     } else {
                         holder.iconView.setAlpha(0f);
                         holder.iconView.setTranslationY(translation);
@@ -238,6 +257,8 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
             holder.iconView.setImageDrawable(mRecentTasksLoader.getDefaultIcon());
             holder.iconView.setVisibility(INVISIBLE);
             holder.iconView.animate().cancel();
+            holder.labelView.setText(null);
+            holder.labelView.animate().cancel();
             holder.thumbnailView.setContentDescription(null);
             holder.thumbnailView.setTag(null);
             holder.thumbnailView.setOnLongClickListener(null);
@@ -245,6 +266,15 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
             holder.iconView.setAlpha(1f);
             holder.iconView.setTranslationX(0f);
             holder.iconView.setTranslationY(0f);
+            holder.labelView.setAlpha(1f);
+            holder.labelView.setTranslationX(0f);
+            holder.labelView.setTranslationY(0f);
+            if (holder.calloutLine != null) {
+                holder.calloutLine.setAlpha(1f);
+                holder.calloutLine.setTranslationX(0f);
+                holder.calloutLine.setTranslationY(0f);
+                holder.calloutLine.animate().cancel();
+            }
             holder.taskDescription = null;
             holder.loadedThumbnailAndIcon = false;
         }
@@ -633,7 +663,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
             final TimeInterpolator cubic = new DecelerateInterpolator(1.5f);
             FirstFrameAnimatorHelper.initializeDrawListener(holder.iconView);
             for (View v :
-                new View[] { holder.iconView }) {
+                new View[] { holder.iconView, holder.labelView, holder.calloutLine }) {
                 if (v != null) {
                     ViewPropertyAnimator vpa = v.animate().translationX(0).translationY(0)
                             .alpha(1f).setStartDelay(startDelay)
